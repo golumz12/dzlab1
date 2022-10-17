@@ -1,12 +1,24 @@
-import math
-a = float(input("a = "))
-b = float(input("b = "))
-c = float(input("c = "))
-d = b ** 2 - 4 * a * c
-if d > 0:
-    x1 = (-b + math.sqrt(d)) / (2 * a)
-    x2 = (-b - math.sqrt(d)) / (2 * a)
-elif d == 0:
-    x = -b / (2 * a)
-else:
-    print("Корней нет")
+import requests
+city = "Moscow,RU"
+appid = "821a1f013658293f3dfd6c7754f873de"
+res = requests.get("http://api.openweathermap.org/data/2.5/weather",
+params={'q':city, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
+data = res.json()
+print("Город:",city)
+print("Погодные условия:", data['weather'][0]['description'])
+print("Температура:", data['main']['temp'])
+print("Минимальная температура:", data['main']['temp_min'])
+print("Максимальная температура", data['main']['temp_max'])
+print("Скорость ветра", data['wind']["speed"])
+print("Видимость", data['visibility'])
+res = requests.get("http://api.openweathermap.org/data/2.5/forecast",
+params={'q':city, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
+data = res.json()
+print("Прогноз погоды на неделю:")
+for i in data['list']:
+    print("Дата <", i['dt_txt'], "> \r\nТемпература <",
+    '{0:+3.0f}'.format(i['main']['temp']), "> \r\nПогодные условия <",
+    i['weather'][0]['description'], ">")
+    print("Скорость ветра <", i['wind']["speed"],">")
+    print("Видимость <", i['visibility'],">")
+    print("******************************")
